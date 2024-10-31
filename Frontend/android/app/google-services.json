@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "391451829517",
+    "project_id": "chromoto-sar",
+    "storage_bucket": "chromoto-sar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391451829517:android:6d82414de1c8e9f51afc44",
+        "android_client_info": {
+          "package_name": "com.example.login_page"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391451829517-mf2arpp8l65sdp9j8ion0ld4jat94gl3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.login_page",
+            "certificate_hash": "3d3aac5bbda456269955789ec1b75af302804af1"
+          }
+        },
+        {
+          "client_id": "391451829517-5uc834ihimp25rloji8la82d3hf3ff2j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf6WanPwTCjYpZLWHkWw3NBEJ36b3XKJU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391451829517-5uc834ihimp25rloji8la82d3hf3ff2j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
