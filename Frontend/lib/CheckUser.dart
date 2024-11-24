@@ -25,13 +25,11 @@ class _CheckUserState extends State<CheckUser> {
   // User? user = FirebaseAuth.instance.currentUser;
   auth.authStateChanges().listen((User? user) {
     if (user != null && mounted) {
-      String? email = user.email; // Nullable email
+      String email = user.email!; // Nullable email
       bool isNumeric = false;
-      if (email != null) {
-        // Check if the first 10 characters of email are numeric
-        isNumeric = RegExp(r'^[0-9]+$').hasMatch(email.substring(0, 10));
-      }
-      developer.log('User is signed in!');
+      // Check if the first 10 characters of email are numeric
+      isNumeric = RegExp(r'^[0-9]+$').hasMatch(email.substring(0, 10));
+          developer.log('User is signed in!');
       setState(() {
         isLogin = true;
       });

@@ -17,6 +17,7 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 // }
 
 class LiveBackground extends StatefulWidget {
+  const LiveBackground({super.key}); // Make sure the constructor includes `super.key`
   @override
   State<StatefulWidget> createState() {
     return _LiveBackgroundState();
