@@ -1,2 +1,4 @@
 *.onnx 
 .env 
+/node_modules
+.vscode
