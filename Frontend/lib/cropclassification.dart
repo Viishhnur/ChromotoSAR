@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
@@ -21,7 +22,8 @@ class _CropClassificationPageState extends State<CropClassificationPage> {
   Future<void> _pickImage() async {
     try {
       final ImagePicker picker = ImagePicker();
-      final XFile? pickedImage = await picker.pickImage(source: ImageSource.gallery);
+      final XFile? pickedImage =
+          await picker.pickImage(source: ImageSource.gallery);
 
       if (pickedImage != null) {
         setState(() {
@@ -34,6 +36,17 @@ class _CropClassificationPageState extends State<CropClassificationPage> {
     }
   }
 
+  // void loadENV() async {
+  //   try {
+  //     await dotenv.load(
+  //         fileName:
+  //             "/home/viishhnu/Backup/SEM-5/Flutter login page/Remote sensing/Frontend/.env");
+              
+  //   } catch (err) {
+  //     developer.log('Error:  $err');
+  //   }
+  // }
+
   // Upload Image to the server for prediction
   Future<void> _uploadImage() async {
     if (_image == null) {
@@ -43,12 +56,16 @@ class _CropClassificationPageState extends State<CropClassificationPage> {
 
     // Convert image to Base64
     String base64Image = base64Encode(_image!.readAsBytesSync());
-    developer.log('Base64 image size: ${base64Image.length} characters'); // Debugging line
-
+    developer.log(
+        'Base64 image size: ${base64Image.length} characters'); // Debugging line
+    // loadENV();
+    // await dotenv.load(fileName: "/home/viishhnu/Backup/SEM-5/Flutter login page/Remote sensing/Backend/.env");
+    // String serverIp = dotenv.env['SERVER_IP'] ?? '192.168.29.67';
+    // String? port = dotenv.env['PORT'];
     // Prepare the request payload
     try {
       var response = await http.post(
-        Uri.parse('http://192.168.184.30:3001/predict'),
+        Uri.parse('http://192.168.255.30:3001/predict'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -100,68 +117,43 @@ class _CropClassificationPageState extends State<CropClassificationPage> {
           // Center content
           Center(
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Center items vertically
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: _pickImage, // Trigger the image picker
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 15,
-                      horizontal: 30,
-                    ), // Button size
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Rounded edges
-                    ),
-                  ),
-                  child: const Text(
-                    'Pick Image',
-                    style: TextStyle(fontSize: 18),
+                const Text(
+                  'Welcome to the Crop Classification Page!',
+                  style: TextStyle(
+                    fontSize: 18,
+                    
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 20), // Space between the buttons
-
-                // If image is picked, display it
-                if (_image != null)
-                  Image.file(
-                    _image!, // Display the selected image
-                    height: 200, // Adjust the image size
-                    fit: BoxFit.cover,
-                  ),
-                const SizedBox(height: 20), // Space between the image and the button
-
+                const SizedBox(height: 20),
+                _image == null
+                    ? const Text('No image selected.')
+                    : Image.file(
+                        _image!,
+                        height: 300,
+                        width: 300,
+                      ),
+                const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {
-                    // Check if an image is selected and proceed to upload & predict
-                    if (_image != null) {
-                      _uploadImage(); // Call upload and prediction method
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please pick an image first!')),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 15,
-                      horizontal: 30,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Text(
-                    'Upload & Predict',
-                    style: TextStyle(fontSize: 18),
-                  ),
+                  onPressed: _pickImage,
+                  child: const Text('Select Image from Gallery'),
                 ),
-                const SizedBox(height: 20), // Space between the buttons
-
-                // Display prediction result
-                if (_prediction != null)
-                  Text(
-                    'Prediction: $_prediction',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: _uploadImage,
+                  child: const Text('Upload and Predict'),
+                ),
+                const SizedBox(height: 16),
+                _prediction == null
+                    ? const Text('Prediction will appear here.')
+                    : Text(
+                        'Predicted crop: $_prediction',
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold,color: Colors.white,),
+                      ),
               ],
             ),
           ),

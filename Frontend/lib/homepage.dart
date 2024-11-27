@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 20,
                     childAspectRatio:
-                        3 / 4, // Adjusted aspect ratio for taller cards
+                        1 /2 , // Adjusted aspect ratio for taller cards
                   ),
                   children: [
                     _buildCard(
@@ -189,16 +189,17 @@ class _HomePageState extends State<HomePage> {
                       'assets/images/crop.jpg',
                       CropClassificationPage(),
                     ),
-                    _buildCard(
-                      'Flood Detection',
-                      'assets/images/floods.jpg',
-                      FloodDetectionPage(),
-                    ),
-                    _buildCard(
-                      'Disaster Managment',
-                      'assets/images/disaster2.jpg',
-                      DisasterManagementPage(),
-                    ),
+                    // uncomment the below code for next mile stone 
+                    // _buildCard(
+                    //   'Flood Detection',
+                    //   'assets/images/floods.jpg',
+                    //   FloodDetectionPage(),
+                    // ),
+                    // _buildCard(
+                    //   'Disaster Managment',
+                    //   'assets/images/disaster2.jpg',
+                    //   DisasterManagementPage(),
+                    // ),
                   ],
                 ),
               ),

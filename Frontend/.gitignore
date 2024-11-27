@@ -117,3 +117,5 @@ app.*.map.json
 
 # Large model files
 modelSpecNew.onnx
+.bashrc
+.vscode
