@@ -3,47 +3,46 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:login_page/space_live.dart';
 
 class SARImageColorizationPage extends StatefulWidget {
   const SARImageColorizationPage({super.key});
 
   @override
-  State<SARImageColorizationPage> createState() => _SARImageColorizationPageState();
+  State<SARImageColorizationPage> createState() =>
+      _SARImageColorizationPageState();
 }
 
 class _SARImageColorizationPageState extends State<SARImageColorizationPage> {
   File? _selectedImage;
   String? _colorizedImage;
+  bool _showGroundTruth = false;
 
   final ImagePicker _picker = ImagePicker();
 
-  // Pick image from gallery
   Future<void> _uploadImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
         _selectedImage = File(pickedFile.path);
-        _colorizedImage = null; // Clear previous result
+        _colorizedImage = null;
+        _showGroundTruth = false;
       });
     }
   }
 
-  // Send image to backend for colorization
   Future<void> _predictImage() async {
     if (_selectedImage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No image selected')),
-      );
+      _showSnackBar('No grayscale image selected');
       return;
     }
 
-    final bytes = await _selectedImage!.readAsBytes();
-    final base64Image = base64Encode(bytes);
+    final base64Image = base64Encode(await _selectedImage!.readAsBytes());
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.255.30:3001/colorize'),  // Update the IP address to your server
+        Uri.parse('http://192.168.107.201:3001/colorize'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'image': base64Image}),
       );
@@ -52,77 +51,132 @@ class _SARImageColorizationPageState extends State<SARImageColorizationPage> {
         final responseData = jsonDecode(response.body);
         setState(() {
           _colorizedImage = responseData['colorizedImage'];
+          _showGroundTruth = true;
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to colorize image')),
-        );
+        _showSnackBar('Failed to colorize image');
       }
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $error')),
-      );
+      _showSnackBar('Error: $error');
     }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SAR Image Colorization'),
-      ),
+      appBar: AppBar(title: const Text('SAR Image Colorization')),
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/sar2.jpg'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Center(
+          const LiveBackground(),
+          SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: _uploadImage,
-                  child: const Text('Upload Image'),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _predictImage,
-                  child: const Text('Predict'),
-                ),
                 const SizedBox(height: 20),
                 if (_selectedImage != null)
-                  Image.file(
-                    _selectedImage!,
-                    height: 200,
-                    width: 200,
-                    fit: BoxFit.cover,
-                  ),
+                  _buildImagePreview('Urban Grayscale Image', _selectedImage!),
+                const SizedBox(height: 20),
+                if (_showGroundTruth)
+                  _buildImagePreview('Ground Truth Image',
+                      File('assets/images/urban_ground_color.png'),
+                      isAsset: true),
+                const SizedBox(height: 20),
                 if (_colorizedImage != null)
-                  Column(
-                    children: [
-                      const Text(
-                        'Colorized Image:',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color:Colors.white),
-                      ),
-                      const SizedBox(height: 10),
-                      Image.memory(
-                        base64Decode(_colorizedImage!),
-                        height: 200,
-                        width: 200,
-                        fit: BoxFit.cover,
-                      ),
-                    ],
-                  ),
+                  _buildImageFromBase64('Colorized Image', _colorizedImage!),
+                const SizedBox(height: 30),
+                _buildButtonRow(),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildImagePreview(String title, File image, {bool isAsset = false}) {
+    return Column(
+      children: [
+        Text(
+          '$title:',
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: [
+              Shadow(blurRadius: 2, color: Colors.black, offset: Offset(1, 1))
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        isAsset
+            ? Image.asset(
+                image.path,
+                height: 200,
+                width: 200,
+                fit: BoxFit.cover,
+              )
+            : Image.file(
+                image,
+                height: 200,
+                width: 200,
+                fit: BoxFit.cover,
+              ),
+      ],
+    );
+  }
+
+  Widget _buildImageFromBase64(String title, String base64Image) {
+    return Column(
+      children: [
+        Text(
+          '$title:',
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            shadows: [
+              Shadow(blurRadius: 2, color: Colors.black, offset: Offset(1, 1))
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        Image.memory(
+          base64Decode(base64Image),
+          height: 200,
+          width: 200,
+          fit: BoxFit.cover,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildButtonRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildOutlinedButton(
+            'Upload Grayscale', Colors.redAccent, _uploadImage),
+        const SizedBox(width: 20),
+        _buildOutlinedButton('Colorize', Colors.blueAccent, _predictImage),
+      ],
+    );
+  }
+
+  Widget _buildOutlinedButton(
+      String text, Color color, VoidCallback onPressed) {
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(color: color, width: 2),
+        foregroundColor: color,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+      child: Text(text, style: const TextStyle(fontSize: 16)),
     );
   }
 }

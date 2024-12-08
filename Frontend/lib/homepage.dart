@@ -2,11 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:login_page/cropclassification.dart';
-import 'package:login_page/disastermanagment.dart';
-import 'package:login_page/flooddetection.dart';
 import 'package:login_page/login.dart';
 import 'package:login_page/sarimagecolor.dart';
-import 'package:login_page/space_live.dart';
 
 class HomePage extends StatefulWidget {
   final bool isPhoneRegistration;
@@ -176,20 +173,20 @@ class _HomePageState extends State<HomePage> {
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 20,
                     childAspectRatio:
-                        1 /2 , // Adjusted aspect ratio for taller cards
+                        1 / 2, // Adjusted aspect ratio for taller cards
                   ),
                   children: [
                     _buildCard(
-                      'SAR Image Colorization',
+                      'SAR Image Colorization(pix2pix , GAN)',
                       'assets/images/satellite.png',
                       SARImageColorizationPage(),
                     ),
                     _buildCard(
-                      'Crop Classification',
+                      'Crop Classification(VGG-16 , Deep Learning)',
                       'assets/images/crop.jpg',
                       CropClassificationPage(),
                     ),
-                    // uncomment the below code for next mile stone 
+                    // uncomment the below code for next mile stone
                     // _buildCard(
                     //   'Flood Detection',
                     //   'assets/images/floods.jpg',
@@ -211,7 +208,6 @@ class _HomePageState extends State<HomePage> {
               _buildFooterIcon(Icons.search, 'Search', () {}),
               _buildFooterIcon(Icons.notifications, 'Notifications', () {}),
               _buildFooterIcon(Icons.account_circle, 'Account', () {}),
-              
             ],
           ),
         ),
@@ -273,7 +269,6 @@ class _HomePageState extends State<HomePage> {
               label,
               style: const TextStyle(fontSize: 12),
             ),
-            
           ],
         ),
       ),

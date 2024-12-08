@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
@@ -41,7 +40,7 @@ class _CropClassificationPageState extends State<CropClassificationPage> {
   //     await dotenv.load(
   //         fileName:
   //             "/home/viishhnu/Backup/SEM-5/Flutter login page/Remote sensing/Frontend/.env");
-              
+
   //   } catch (err) {
   //     developer.log('Error:  $err');
   //   }
@@ -65,7 +64,7 @@ class _CropClassificationPageState extends State<CropClassificationPage> {
     // Prepare the request payload
     try {
       var response = await http.post(
-        Uri.parse('http://192.168.255.30:3001/predict'),
+        Uri.parse('http://192.168.107.201:3001/predict'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -123,7 +122,6 @@ class _CropClassificationPageState extends State<CropClassificationPage> {
                   'Welcome to the Crop Classification Page!',
                   style: TextStyle(
                     fontSize: 18,
-                    
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -152,7 +150,10 @@ class _CropClassificationPageState extends State<CropClassificationPage> {
                     : Text(
                         'Predicted crop: $_prediction',
                         style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold,color: Colors.white,),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
               ],
             ),

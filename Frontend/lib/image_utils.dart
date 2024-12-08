@@ -2,7 +2,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:developer' as developer;
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
@@ -27,7 +26,8 @@ class ImageUtils {
   // Upload image to server for prediction
   static Future<String?> uploadImageForPrediction(File image) async {
     String base64Image = base64Encode(image.readAsBytesSync());
-    developer.log('Base64 image size: ${base64Image.length} characters'); // Debugging line
+    developer.log(
+        'Base64 image size: ${base64Image.length} characters'); // Debugging line
 
     try {
       var response = await http.post(
