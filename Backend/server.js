@@ -31,6 +31,7 @@ const modelPath = path.join(__dirname, 'modelSpecNew.onnx'); // Path to ONNX mod
 let Cropsession;
 
 const pix2pixmodelPath = path.join(__dirname, "pix2pix_gen_final.onnx"); // Path to SAR colorization ONNX model
+// const pix2pixmodelPath = path.join(__dirname, "sar2rgb.onnx"); // Path to SAR colorization ONNX model
 
 
 async function loadCropModel() {
